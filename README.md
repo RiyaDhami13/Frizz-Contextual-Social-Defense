@@ -18,7 +18,7 @@ In an era of AI-generated "rizz," Frizz provides the ultimate counter-measure. W
 - **Tracking:** Logged via Hackatime ⏱️
 
 ## 🔧 Installation & Setup
-1. Clone the repo: `git clone https://github.com/RiyaDhami13/frizz-ai.git`
+1. Clone the repo: `https://github.com/RiyaDhami13/Frizz-Contextual-Social-Defense.git`
 2. Install dependencies: `pip install streamlit requests`
 3. Run the app: `streamlit run app.py`
 
