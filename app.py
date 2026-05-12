@@ -1,6 +1,5 @@
 import streamlit as st
-from utilis.ai_logic import generate_boring_response, process
-from utils.ai_logic import process_screenshot screenshot
+from utils.ai_logic import generate_boring_response, process_screenshot
 st.set_page_config(page_title="Frizz_AI",page_icon="📉")
 
 #--1.Session state
@@ -15,13 +14,13 @@ with st.sidebar:
     st.header("📂Frizz Archives")
     if not st.session_state.frizz_history:
         st.write("No records found")
-for i, record in enumerate(reversed(st.session_state.frizz_history)):
-    st.info(f"Entry{len(st.session_state.frizz_history)-i}")
-    st.write(record)
-    st.divider()
+    for i, record in enumerate(reversed(st.session_state.frizz_history)):
+        st.info(f"Entry{len(st.session_state.frizz_history)-i}")
+        st.write(record)
+        st.divider()
 
 #--3.Main Input tabs
-tab1,tab2 = st.tab(["Text Mode","Screenshot Mode"])
+tab1,tab2 = st.tabs(["Text Mode","Screenshot Mode"])
 
 with tab1:
     user_msg = st.text_area("Paste the message")
