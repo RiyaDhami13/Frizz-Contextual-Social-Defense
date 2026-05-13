@@ -84,3 +84,29 @@ def process_screenshot(image_file, level="Corporate Drone"):
         return response.json()['choices'][0]['message']['content']
   else:
         return f"Error: API returned {response.status_code} - {response.text}"
+
+
+
+
+
+
+def generate_boring_response(text_input, level="Corporate Drone"):
+    """Handles text-only Frizzing"""
+    headers = {
+        "Authorization": f"Bearer {API_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    system_instruction = f"You are Frizz AI. Transform this text into {level} speak. Be boring. Use Sarkari Nepali if the input is Nepali."
+
+    data = {
+        "model": "gpt-4o",
+        "messages": [
+            {"role": "user", "content": [{"type":"text", "text":f"{system_instruction}\n\nInput: {text_input}"}]}
+        ]
+    }
+
+    response = requests.post(API_URL, headers=headers, json=data)
+    if response.status_code == 200:
+        return response.json()['choices'][0]['message']['content']
+    return f"Error: {response.status_code}"
