@@ -1,5 +1,3 @@
-import base64
-import requests
 import os
 from dotenv import load_dotenv
 
