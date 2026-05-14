@@ -1,21 +1,32 @@
 import os
+import base64
+import requests
 from dotenv import load_dotenv
 
 
 #1. Load Configuration
-load_dotenv()
+
+dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
+load_dotenv(dotenv_path)
+
 API_KEY = os.getenv("HACKCLUB_API_KEY")
 API_URL = os.getenv("HACKCLUB_API_URL")
 
 
 def _extract_reply(response):
+  """Helper to cleanup the API response"""
   if response.status_code == 200:
     return response.json()["choices"][0]["message"]["content"]
-
+  
   return f"Error: API returned {response.status_code}-{response.text}"
 
 
 def generate_boring_response(message, level="Corporate Drone"):
+  """Handles text only Frizzing"""
+
+  if not API_URL:
+      return"Error:API_URL not found in .env"
+  
   headers = {
     "Authorization": f"Bearer {API_KEY}",
     "Content-Type":"application/json"
@@ -42,8 +53,11 @@ def generate_boring_response(message, level="Corporate Drone"):
 
 
 def process_screenshot(image_file, level="Corporate Drone"):
+  """Handles image-based Frizzing"""
+
   #Convert the image to a string the API can read
   encoded_image = base64.b64encode(image_file.read()).decode('utf-8')
+  mime_type = getattr(image_file,"type","image/jpg")
 
   headers = {
     "Authorization": f"Bearer {API_KEY}",
@@ -52,16 +66,13 @@ def process_screenshot(image_file, level="Corporate Drone"):
 
 #3. The "Personality" Logic
   system_instruction = f"""
-    You are Frizz AI. Analyze the uploaded chat screenshot. 
+You are Frizz AI. Analyze the chat screenshot. 
     1. Identify the last message sent. 
-    2. If the message is in Nepali, respond in formal 'Sarkari' Nepali. 
-    3. If in English, use bureaucratic English.
-    4. Match this boredom level: {level}.
-    The goal is to be so dry and formal that the other person stops flirting or joking.
+    2. Respond in formal 'Sarkari' Nepali (if Nepali) or Bureaucratic English.
+    3. Match boredom level: {level}.
     """
 
 #4. Construct the Request(Note:'messages' is lowercase)
-  mime_type = getattr(image_file, "type", "image/jpeg")
   data ={
     "model":"gpt-4o",
     "messages": [
@@ -76,35 +87,5 @@ def process_screenshot(image_file, level="Corporate Drone"):
 
 #5. Send to Hack Club API
   response = requests.post(API_URL, headers=headers, json=data, timeout=60)
+  return _extract_reply(response)
 
-# 6. Safety check: Did it work?
-  if response.status_code == 200:
-        return response.json()['choices'][0]['message']['content']
-  else:
-        return f"Error: API returned {response.status_code} - {response.text}"
-
-
-
-
-
-
-def generate_boring_response(text_input, level="Corporate Drone"):
-    """Handles text-only Frizzing"""
-    headers = {
-        "Authorization": f"Bearer {API_KEY}",
-        "Content-Type": "application/json"
-    }
-
-    system_instruction = f"You are Frizz AI. Transform this text into {level} speak. Be boring. Use Sarkari Nepali if the input is Nepali."
-
-    data = {
-        "model": "gpt-4o",
-        "messages": [
-            {"role": "user", "content": [{"type":"text", "text":f"{system_instruction}\n\nInput: {text_input}"}]}
-        ]
-    }
-
-    response = requests.post(API_URL, headers=headers, json=data)
-    if response.status_code == 200:
-        return response.json()['choices'][0]['message']['content']
-    return f"Error: {response.status_code}"
