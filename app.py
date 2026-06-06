@@ -48,25 +48,25 @@ with tab1:
         if user_msg:
             import requests
             
-            # 1. Isolate the unstable network operation in the try-except block
-            try:
-                res = generate_boring_response(user_msg)
-                network_success = True
-            except requests.exceptions.ConnectionError:
-                network_success = False
-                st.error("📡 Network Connectivity Error: Unable to resolve connection to backend AI server. Please check your internet connection and try again.")
+            # Run the generation pipeline
+            res = generate_boring_response(user_msg)
             
-            # 2. If the network call succeeded safely, proceed with UI and Storage
-            if network_success:
+            # Check if the response is an error or a valid anti-rizz generation
+            if res.startswith("System Error:"):
+                # Display a persistent error box on screen without refreshing!
+                st.error(res)
+            else:
+                # If valid, show the response code
                 st.code(res)
                 
-                # Call your storage layer safely outside the exception check
+                # Commit to local JSON archive storage
                 log_neutralized_rizz(
                     sender_text=user_msg,
                     generated_defense=res,
                     boredom_score="Severe"
                 )
                 
+                # Refresh safely now that we have a real record
                 st.rerun()
 
 with tab2:
