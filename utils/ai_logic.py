@@ -54,7 +54,7 @@ You are Frizz AI. Analyze this  chat screenshot carefully.
     """
       
       response = model.generate_content([system_instruction,img])
-      return.response.text.strip()
+      return response.text.strip()
   
   except Exception as e:
       return f"System Error: Unable to complete vision processing. Details: {str(e)}"
