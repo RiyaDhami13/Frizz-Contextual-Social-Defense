@@ -14,7 +14,7 @@ def generate_boring_response(message, level="Corporate Drone"):
     """Handles text-only Frizzing using the native Gemini SDK"""
     try:
         # FIX: Changed 'gemini-flash-1.5' to 'gemini-1.5-flash'
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = genai.GenerativeModel("gemini-1.5-flash-latest")
         
         system_instruction = f"""
         You are Frizz AI.
@@ -40,7 +40,7 @@ def process_screenshot(image_file, level="Corporate Drone"):
         img = Image.open(image_file)
         
         # FIX: Changed 'gemini-flash-1.5' to 'gemini-1.5-flash'
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = genai.GenerativeModel("gemini-1.5-flash-latest")
         
         system_instruction = f"""
         You are Frizz AI. Analyze this chat screenshot carefully.
